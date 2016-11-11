@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>github-file-tree test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../github-file-tree.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <github-file-tree></github-file-tree>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('github-file-tree', function() {
+        test('instantiating the element works', function() {
+          var element = fixture('basic');
+          assert.equal(element.is, 'github-file-tree');
+        });
+      });
+    </script>
+  </body>
+</html>

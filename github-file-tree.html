@@ -1,0 +1,37 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`github-file-tree`
+Show a tree view of github repo content
+
+@demo demo/index.html
+-->
+
+<dom-module id="github-file-tree">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'github-file-tree',
+
+      properties: {
+        data: {
+          type: Object,
+          notify: true,
+        },
+        visualizationData: {
+          computed: '_computeVisualizationData(data)',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
