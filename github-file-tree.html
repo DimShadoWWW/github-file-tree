@@ -57,6 +57,11 @@ Show a tree view of github repo content
     Polymer({
 
       is: 'github-file-tree',
+      /**
+       * Fired when an item is selected. Event details contains: '{file: path}'
+       *
+       * @event openfile
+       */
 
       properties: {
         /**

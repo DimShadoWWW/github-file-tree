@@ -64,7 +64,7 @@ Show a tree view of github repo content
       </template>
     </template>
     <template is="dom-if" if="{{!_isFolder}}" restamp="true">
-      <paper-icon-item on-click="open" on-tap="open">
+      <paper-icon-item on-click="open" on-tap="_open">
         <iron-icon icon="icons:description" item-icon>
         </iron-icon>
         <paper-item-body>
@@ -78,6 +78,11 @@ Show a tree view of github repo content
     Polymer({
 
       is: 'github-file-tree-element',
+      /**
+       * Fired when this is selected. Event details contains: '{file: path}'
+       *
+       * @event openfile
+       */
 
       properties: {
         /**
@@ -101,7 +106,7 @@ Show a tree view of github repo content
       _getName:function() {
         return this.data.path.substring(this.data.path.lastIndexOf('/')+1);
       },
-      open: function() {
+      _open: function() {
         this.fire('openfile', {file: this.data.path});
       },
     });
