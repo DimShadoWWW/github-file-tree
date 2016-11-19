@@ -13,32 +13,33 @@
     "size": 721
   }, {
     "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "path": ".github/a",
-    "mode": "040000",
-    "type": "tree"
-  }, {
-    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "path": ".github/a/ISSUE_TEMPLATE.md",
-    "mode": "100644",
-    "type": "blob",
-    "size": 721
-  }, {
-    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "path": ".github/b",
-    "mode": "040000",
-    "type": "tree"
-  }, {
-    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-    "path": ".github/b/ISSUE_TEMPLATE.md",
-    "mode": "100644",
-    "type": "blob",
-    "size": 721
-  }, {
-    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     "path": ".gitignore",
     "mode": "100644",
     "type": "blob",
     "size": 30
+  }, {
+    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "path": "folder1",
+    "mode": "040000",
+    "type": "tree"
+  }, {
+    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "path": "folder1/file1.c",
+    "mode": "100644",
+    "type": "blob",
+    "size": 3003
+  }, {
+    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "path": "folder1/file2.c",
+    "mode": "100644",
+    "type": "blob",
+    "size": 3003
+  }, {
+    "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "path": "LICENCE.md",
+    "mode": "100644",
+    "type": "blob",
+    "size": 3503
   }, {
     "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     "path": "CONTRIBUTING.md",
