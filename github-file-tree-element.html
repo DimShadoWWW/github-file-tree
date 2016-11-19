@@ -64,7 +64,7 @@ Show an element of github repo content
       </template>
     </template>
     <template is="dom-if" if="{{!_isFolder}}" restamp="true">
-      <paper-icon-item on-click="open" on-tap="_open">
+      <paper-icon-item on-click="_open" on-tap="_open">
         <iron-icon icon="icons:description" item-icon>
         </iron-icon>
         <paper-item-body>
