@@ -1,8 +1,13 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="github-file-tree-element.html">
 
 <!--
 `github-file-tree`
 Show a tree view of github repo content
+
+  Example:
+
+      <github-file-tree data="{{githubTreeResponse}}"></iron-selector>
 
 @demo demo/index.html
 -->
@@ -14,7 +19,14 @@ Show a tree view of github repo content
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+
+
+    <div class="parent">
+      <template is="dom-repeat" items="{{_visualizationData}}" as="{{item}}">
+        <github-file-tree-element data="{{item}}"></github-file-tree-element>
+      </template>
+  </div>
+
   </template>
 
   <script>
@@ -23,13 +35,63 @@ Show a tree view of github repo content
       is: 'github-file-tree',
 
       properties: {
+        /**
+         * "tree" key from GitHub API's GetTree (https://developer.github.com/v3/git/trees/#get-a-tree-recursively).
+         */
         data: {
           type: Object,
-          notify: true,
+          value: function() {
+            return {};
+          },
         },
-        visualizationData: {
+
+        _visualizationData: {
           computed: '_computeVisualizationData(data)',
         },
+      },
+      _createPath: function(obj, path, data) {
+        if (path !== "") {
+          if (obj.hasOwnProperty(path.substring(0, path.indexOf('/')))){
+            this._createPath(obj[path.substring(0, path.indexOf('/'))].childs, path.substring(path.indexOf('/') + 1), data);
+          }
+        }
+      },
+      _getNestedChildren: function(arr, parent) {
+        var out = []
+        for (var i in arr) {
+          if (arr[i].parent == parent) {
+            var children = this._getNestedChildren(arr, arr[i].id)
+
+            if (children.length) {
+              arr[i].children = children
+            }
+            out.push(arr[i])
+          }
+        }
+        return out
+      },
+      _computeVisualizationData: function() {
+        var obj = this.data;
+        var id = 1
+        var keys = {};
+        for (var v in obj.tree) {
+          if (obj.tree[v].path.substring(0,obj.tree[v].path.lastIndexOf('/')) === "") {
+            obj.tree[v].parent = 0;
+          } else {
+            if (keys.hasOwnProperty(obj.tree[v].path.substring(0,obj.tree[v].path.lastIndexOf('/')))) {
+              obj.tree[v].parent = keys[obj.tree[v].path.substring(0,obj.tree[v].path.lastIndexOf('/'))];
+            }
+          }
+          obj.tree[v].id = id;
+          keys[obj.tree[v].path] = id;
+          id++;
+        }
+
+        // this.set("_visualizationData", this._getNestedChildren(obj.tree, 0));
+        return this._getNestedChildren(obj.tree, 0);
+      },
+      stringify: function(s) {
+        return JSON.stringify(s);
       },
 
     });

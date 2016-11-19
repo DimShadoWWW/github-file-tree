@@ -1,0 +1,85 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/communication-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-item/paper-icon-item.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-item/paper-item-body.html">
+<link rel="import" href="../paper-styles/color.html">
+
+<!--
+`github-file-tree-element`
+Show a tree view of github repo content
+
+  Example:
+
+      <github-file-tree-element></iron-selector>
+
+@demo demo/index.html
+-->
+
+<dom-module id="github-file-tree-element">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <template is="dom-if" if="{{_isFolder}}" restamp="true">
+      <paper-icon-item>
+        <iron-icon icon="folder-open" item-icon>
+        </iron-icon>
+        <paper-item-body>
+          <div>{{_getName()}}</div>
+        </paper-item-body>
+      </paper-icon-item>
+      <template is="dom-repeat" items="{{data.children}}">
+        <github-file-tree-element style="padding-left: 10px;" data="{{item}}"></github-file-tree-element>
+      </template>
+    </template>
+    <template is="dom-if" if="{{!_isFolder}}" restamp="true">
+      <paper-icon-item on-click="open" on-tap="open">
+        <iron-icon icon="icons:description" item-icon>
+        </iron-icon>
+        <paper-item-body>
+          <div>{{_getName()}}</div>
+        </paper-item-body>
+      </paper-icon-item>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'github-file-tree-element',
+
+      properties: {
+        /**
+        * "tree" key from GitHub API's GetTree (https://developer.github.com/v3/git/trees/#get-a-tree-recursively).
+        */
+        data: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+          notify: true
+        },
+
+        _isFolder: {
+          computed: '_computeIsFolder(data)',
+        },
+      },
+      _computeIsFolder:function (data) {
+        return data.type === "tree";
+      },
+      _getName:function() {
+        return this.data.path.substring(this.data.path.lastIndexOf('/')+1);
+      },
+      open: function() {
+        this.fire('openfile', {file: this.data.path});
+      },
+    });
+  </script>
+</dom-module>

@@ -11,6 +11,7 @@
 
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../iron-ajax/iron-ajax.html">
   <link rel="import" href="../github-file-tree.html">
 
   <style is="custom-style" include="demo-pages-shared-styles">
@@ -22,41 +23,17 @@
   <div class="vertical-section-container centered">
     <h3>Basic github-file-tree demo</h3>
     <demo-snippet>
-      <template>
-          <github-file-tree></github-file-tree>
+      <template is="dom-bind">
+        <iron-ajax
+          auto
+          url="./tree.json"
+          last-response="{{tree}}"
+          handle-as="json"></iron-ajax>
+          <github-file-tree data="{{tree}}"></github-file-tree>
         </template>
     </demo-snippet>
   </div>
 
-  <script>
-    document.querySelector("github-file-tree").data = {
-      "sha": "207ee81062369be6ef70182c8a3b4e660f3e0551",
-      "tree": [{
-        "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        "path": ".github",
-        "mode": "040000",
-        "type": "tree"
-      }, {
-        "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        "path": ".github/ISSUE_TEMPLATE.md",
-        "mode": "100644",
-        "type": "blob",
-        "size": 721
-      }, {
-        "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        "path": ".gitignore",
-        "mode": "100644",
-        "type": "blob",
-        "size": 30
-      }, {
-        "sha": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        "path": "CONTRIBUTING.md",
-        "mode": "100644",
-        "type": "blob",
-        "size": 3503
-      }]
-    };
-  </script>
 </body>
 
 </html>
