@@ -2,6 +2,7 @@
   "name": "github-file-tree",
   "description": "Show a tree view of github repo content",
   "main": "github-file-tree.html",
+  "license": "MIT",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "paper-icon-button": "PolymerElements/paper-icon-button#^1.1.3",
