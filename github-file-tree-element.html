@@ -46,13 +46,15 @@ Show an element of github repo content
 
 <dom-module id="github-file-tree-element">
   <template>
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
+        --paper-item-min-height: 20px;
+        --paper-item-icon-width: 23px;
       }
     </style>
     <template is="dom-if" if="{{_isFolder}}" restamp="true">
-      <paper-icon-item>
+      <paper-icon-item disabled>
         <iron-icon icon="folder-open" item-icon>
         </iron-icon>
         <paper-item-body>
