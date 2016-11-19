@@ -115,14 +115,8 @@ Show a tree view of github repo content
           keys[obj.tree[v].path] = id;
           id++;
         }
-
-        // this.set("_visualizationData", this._getNestedChildren(obj.tree, 0));
         return this._getNestedChildren(obj.tree, 0);
       },
-      stringify: function(s) {
-        return JSON.stringify(s);
-      },
-
     });
   </script>
 </dom-module>
