@@ -81,7 +81,7 @@ Show an element of github repo content
 
       is: 'github-file-tree-element',
       /**
-       * Fired when this is selected. Event details contains: '{file: path}'
+       * Fired when this is selected. Event details contains: '{blob: data}'
        *
        * @event openfile
        */
@@ -109,7 +109,7 @@ Show an element of github repo content
         return this.data.path.substring(this.data.path.lastIndexOf('/')+1);
       },
       _open: function() {
-        this.fire('openfile', {file: this.data.path});
+        this.fire('openfile', {file: this.data});
       },
     });
   </script>
