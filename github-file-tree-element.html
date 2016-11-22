@@ -26,7 +26,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icons/communication-icons.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-item/paper-icon-item.html">
 <link rel="import" href="../paper-item/paper-item.html">
@@ -54,19 +53,19 @@ Show an element of github repo content
       }
     </style>
     <template is="dom-if" if="{{_isFolder}}" restamp="true">
-      <paper-icon-item disabled>
-        <iron-icon icon="folder-open" item-icon>
+      <paper-icon-item disabled$="{{_status()}}" drawer-toggle$="{{!_status()}}">
+        <iron-icon icon="icons:folder-open" item-icon>
         </iron-icon>
         <paper-item-body>
           <div>{{_getName()}}</div>
         </paper-item-body>
       </paper-icon-item>
       <template is="dom-repeat" items="{{data.children}}">
-        <github-file-tree-element style="padding-left: 10px;" data="{{item}}"></github-file-tree-element>
+        <github-file-tree-element style="padding-left: 10px;" data="{{item}}" filter="[[filter]]"></github-file-tree-element>
       </template>
     </template>
     <template is="dom-if" if="{{!_isFolder}}" restamp="true">
-      <paper-icon-item on-click="_open" on-tap="_open">
+      <paper-icon-item on-click="_open" on-tap="_open" disabled$="{{_status()}}" drawer-toggle$="{{!_status()}}">
         <iron-icon icon="icons:description" item-icon>
         </iron-icon>
         <paper-item-body>
@@ -81,7 +80,7 @@ Show an element of github repo content
 
       is: 'github-file-tree-element',
       /**
-       * Fired when this is selected. Event details contains: '{blob: data}'
+       * Fired when this is selected. Event details contains: '{blob: obj}'
        *
        * @event openfile
        */
@@ -98,6 +97,15 @@ Show an element of github repo content
           notify: true
         },
 
+        /**
+         * If present, only if match the regexp this element will be enabled ("\.md$|\.markdown$|\.txt$").
+         */
+        filter: {
+          type: String,
+          notify: true,
+          value: "",
+        },
+
         _isFolder: {
           computed: '_computeIsFolder(data)',
         },
@@ -108,8 +116,21 @@ Show an element of github repo content
       _getName:function() {
         return this.data.path.substring(this.data.path.lastIndexOf('/')+1);
       },
+      _status:function() {
+        if (this.data.type === "tree") {
+          return true;
+        }
+        if (this.filter !== "") {
+          var re = new RegExp(this.filter, "g");
+          // disable=true if not match
+          if (this.data.path.match(re) === null) {
+            return true;
+          }
+        }
+        return false;
+      },
       _open: function() {
-        this.fire('openfile', {file: this.data});
+        this.fire('openfile', {blob: this.data});
       },
     });
   </script>

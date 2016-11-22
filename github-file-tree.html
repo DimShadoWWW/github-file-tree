@@ -58,7 +58,7 @@ Show a tree view of github repo content
     <div class="parent">
       <iron-scroll-threshold id="threshold">
       <template is="dom-repeat" items="{{_visualizationData}}" as="{{item}}">
-        <github-file-tree-element data="{{item}}"></github-file-tree-element>
+        <github-file-tree-element data="{{item}}" filter="[[filter]]"></github-file-tree-element>
       </template>
       </iron-scroll-threshold>
     </div>
@@ -86,6 +86,15 @@ Show a tree view of github repo content
           },
         },
 
+        /**
+         * If present, only the elements who match the regexp will be enabled ("\.md$|\.markdown$|\.txt$").
+         */
+        filter: {
+          type: String,
+          notify: true,
+          value: "",
+        },
+
         _visualizationData: {
           computed: '_computeVisualizationData(data)',
         },
@@ -102,7 +111,6 @@ Show a tree view of github repo content
         for (var i in arr) {
           if (arr[i].parent == parent) {
             var children = this._getNestedChildren(arr, arr[i].id)
-
             if (children.length) {
               arr[i].children = children
             }
