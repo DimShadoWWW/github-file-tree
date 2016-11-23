@@ -1,0 +1,137 @@
+<!--
+@license
+Copyright (c) 2016 Inforsoldes  <https://www.inforsoldes.com/>. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-item/paper-icon-item.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-item/paper-item-body.html">
+<link rel="import" href="../paper-styles/color.html">
+
+<!--
+`github-file-tree-element`
+Show an element of github repo content
+
+  Example:
+
+      <github-file-tree-element data="{{itemData}}" filter="[[filter]]"></github-file-tree-element>
+
+@demo demo/index.html
+-->
+
+<dom-module id="github-file-tree-element">
+  <template>
+    <style is="custom-style">
+      :host {
+        display: block;
+        --paper-item-min-height: 20px;
+        --paper-item-icon-width: 23px;
+      }
+    </style>
+    <template is="dom-if" if="{{_isFolder}}" restamp="true">
+      <paper-icon-item disabled$="{{_status()}}" drawer-toggle$="{{!_status()}}">
+        <iron-icon icon="icons:folder-open" item-icon>
+        </iron-icon>
+        <paper-item-body>
+          <div>{{_getName()}}</div>
+        </paper-item-body>
+      </paper-icon-item>
+      <template is="dom-repeat" items="{{data.children}}">
+        <github-file-tree-element style="padding-left: 10px;" data="{{item}}" filter="[[filter]]"></github-file-tree-element>
+      </template>
+    </template>
+    <template is="dom-if" if="{{!_isFolder}}" restamp="true">
+      <paper-icon-item on-click="_open" on-tap="_open" disabled$="{{_status()}}" drawer-toggle$="{{!_status()}}">
+        <iron-icon icon="icons:description" item-icon>
+        </iron-icon>
+        <paper-item-body>
+          <div>{{_getName()}}</div>
+        </paper-item-body>
+      </paper-icon-item>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'github-file-tree-element',
+      /**
+       * Fired when this is selected. Event details contains: '{blob: obj}'
+       *
+       * @event openfile
+       */
+
+      properties: {
+        /**
+        * "tree" key from GitHub API's GetTree (https://developer.github.com/v3/git/trees/#get-a-tree-recursively).
+        */
+        data: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+          notify: true
+        },
+
+        /**
+         * If present, only if match the regexp this element will be enabled ("\.md$|\.markdown$|\.txt$").
+         */
+        filter: {
+          type: String,
+          notify: true,
+          value: "",
+        },
+
+        _isFolder: {
+          computed: '_computeIsFolder(data)',
+        },
+      },
+      _computeIsFolder:function (data) {
+        return data.type === "tree";
+      },
+      _getName:function() {
+        return this.data.path.substring(this.data.path.lastIndexOf('/')+1);
+      },
+      _status:function() {
+        if (this.data.type === "tree") {
+          return true;
+        }
+        if (this.filter !== "") {
+          var re = new RegExp(this.filter, "g");
+          // disable=true if not match
+          if (this.data.path.match(re) === null) {
+            return true;
+          }
+        }
+        return false;
+      },
+      _open: function() {
+        this.fire('openfile', {blob: this.data});
+      },
+    });
+  </script>
+</dom-module>

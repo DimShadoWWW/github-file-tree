@@ -1,0 +1,142 @@
+<!--
+@license
+Copyright (c) 2016 Inforsoldes  <https://www.inforsoldes.com/>. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="github-file-tree-element.html">
+
+<!--
+`github-file-tree`
+Show a tree view of github repo content
+
+  Example:
+
+      <github-file-tree data="{{githubTreeResponse}}"></github-file-tree>
+
+@demo demo/index.html
+-->
+
+<dom-module id="github-file-tree">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      iron-scroll-threshold {
+        position: absolute;
+        top: 10vh;
+        width: 100%;
+        left: -5px;
+        height: 80vh;
+        box-shadow: 0 0 60px rgba(0,0,0,0.5);
+      }
+
+    </style>
+
+
+    <div class="parent">
+      <iron-scroll-threshold id="threshold">
+      <template is="dom-repeat" items="{{_visualizationData}}" as="{{item}}">
+        <github-file-tree-element data="{{item}}" filter="[[filter]]"></github-file-tree-element>
+      </template>
+      </iron-scroll-threshold>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'github-file-tree',
+      /**
+       * Fired when an item is selected. Event details contains: '{file: path}'
+       *
+       * @event openfile
+       */
+
+      properties: {
+        /**
+         * "tree" key from GitHub API's GetTree (https://developer.github.com/v3/git/trees/#get-a-tree-recursively).
+         */
+        data: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+        },
+
+        /**
+         * If present, only the elements who match the regexp will be enabled ("\.md$|\.markdown$|\.txt$").
+         */
+        filter: {
+          type: String,
+          notify: true,
+          value: "",
+        },
+
+        _visualizationData: {
+          computed: '_computeVisualizationData(data)',
+        },
+      },
+      _createPath: function(obj, path, data) {
+        if (path !== "") {
+          if (obj.hasOwnProperty(path.substring(0, path.indexOf('/')))){
+            this._createPath(obj[path.substring(0, path.indexOf('/'))].childs, path.substring(path.indexOf('/') + 1), data);
+          }
+        }
+      },
+      _getNestedChildren: function(arr, parent) {
+        var out = []
+        for (var i in arr) {
+          if (arr[i].parent == parent) {
+            var children = this._getNestedChildren(arr, arr[i].id)
+            if (children.length) {
+              arr[i].children = children
+            }
+            out.push(arr[i])
+          }
+        }
+        return out
+      },
+      _computeVisualizationData: function() {
+        var obj = this.data;
+        var id = 1
+        var keys = {};
+        for (var v in obj.tree) {
+          if (obj.tree[v].path.substring(0,obj.tree[v].path.lastIndexOf('/')) === "") {
+            obj.tree[v].parent = 0;
+          } else {
+            if (keys.hasOwnProperty(obj.tree[v].path.substring(0,obj.tree[v].path.lastIndexOf('/')))) {
+              obj.tree[v].parent = keys[obj.tree[v].path.substring(0,obj.tree[v].path.lastIndexOf('/'))];
+            }
+          }
+          obj.tree[v].id = id;
+          keys[obj.tree[v].path] = id;
+          id++;
+        }
+        return this._getNestedChildren(obj.tree, 0);
+      },
+    });
+  </script>
+</dom-module>
